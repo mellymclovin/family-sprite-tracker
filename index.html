@@ -1,0 +1,506 @@
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap');
+
+#spr-app, #spr-app *{ box-sizing:border-box; }
+#spr-app{
+  --void:#0A0D14;
+  --panel:#141A26;
+  --panel-2:#1B2333;
+  --border:#232C42;
+  --text:#EAEDF5;
+  --text-muted:#7E879C;
+  --karen:#5EE6FF;
+  --genna:#FF4FD8;
+  --mel:#F5C24D;
+  --cass:#7CC576;
+
+  font-family:'Inter',sans-serif;
+  background:
+    radial-gradient(ellipse 900px 380px at 50% -8%, rgba(94,230,255,0.09), transparent),
+    var(--void);
+  color:var(--text);
+  min-height:100%;
+  border-radius:14px;
+  padding-bottom:40px;
+  overflow:hidden;
+}
+.spr-h1{ font-family:'Rajdhani',sans-serif; font-weight:700; letter-spacing:.04em; }
+.spr-mono{ font-family:'JetBrains Mono',monospace; }
+
+/* header */
+.spr-header{
+  position:sticky; top:0; z-index:30;
+  background:rgba(10,13,20,0.94);
+  backdrop-filter:blur(8px);
+  border-bottom:1px solid var(--border);
+  padding:18px 18px 0;
+}
+.spr-title{ font-size:clamp(19px,4.5vw,25px); text-transform:uppercase; line-height:1; }
+.spr-sub{ font-size:11.5px; color:var(--text-muted); margin-top:5px; display:flex; align-items:center; gap:6px; }
+.spr-dot{ width:6px; height:6px; border-radius:50%; background:var(--karen); flex-shrink:0; }
+.spr-dot.saving{ animation:spr-blink 1s infinite; }
+.spr-dot.err{ background:#FF3B5C; }
+@keyframes spr-blink{ 50%{ opacity:.3; } }
+
+.spr-progress-wrap{ margin:14px 0 14px; }
+.spr-progress-label{ display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-bottom:6px; letter-spacing:.03em; }
+.spr-progress-label b{ color:var(--text); font-family:'JetBrains Mono',monospace; font-weight:500; }
+.spr-progress-track{ height:5px; background:var(--panel-2); border-radius:3px; overflow:hidden; border:1px solid var(--border); }
+.spr-progress-fill{ height:100%; border-radius:3px; background:linear-gradient(90deg,var(--karen),var(--genna)); transition:width .4s ease; }
+
+.spr-tabs{ display:flex; gap:6px; overflow-x:auto; padding-bottom:14px; scrollbar-width:none; }
+.spr-tabs::-webkit-scrollbar{ display:none; }
+.spr-tab{
+  flex-shrink:0;
+  font-family:'Rajdhani',sans-serif; font-weight:600; letter-spacing:.03em;
+  font-size:13px; text-transform:uppercase;
+  padding:8px 14px; border-radius:8px;
+  background:var(--panel); border:1px solid var(--border); color:var(--text-muted);
+  cursor:pointer; transition:all .15s ease;
+}
+.spr-tab:hover{ color:var(--text); border-color:#33405e; }
+.spr-tab.active{ color:var(--void); border-color:transparent; }
+.spr-tab:focus-visible{ outline:2px solid var(--karen); outline-offset:2px; }
+
+/* content */
+.spr-content{ padding:18px; }
+.spr-loading{ padding:60px 20px; text-align:center; color:var(--text-muted); font-size:13px; }
+
+.spr-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(150px,1fr));
+  gap:10px;
+}
+.spr-card{
+  background:var(--panel);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:14px 12px;
+  display:flex; flex-direction:column; align-items:center; gap:10px;
+}
+.spr-orb-wrap{ position:relative; width:54px; height:54px; display:flex; align-items:center; justify-content:center; }
+.spr-orb{
+  width:34px; height:34px; border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, color-mix(in srgb, var(--sc) 70%, white), var(--sc));
+  box-shadow:0 0 calc(4px + var(--glow,0) * 16px) calc(0px + var(--glow,0) * 4px) color-mix(in srgb, var(--sc) 65%, transparent);
+  opacity:calc(0.35 + var(--glow,0) * 0.65);
+  transition:box-shadow .35s ease, opacity .35s ease;
+}
+@media (prefers-reduced-motion:no-preference){
+  .spr-orb.lit{ animation:spr-pulse 2.6s ease-in-out infinite; }
+}
+@keyframes spr-pulse{
+  0%,100%{ transform:scale(1); }
+  50%{ transform:scale(1.08); }
+}
+.spr-name{ font-family:'Rajdhani',sans-serif; font-weight:600; font-size:13.5px; text-transform:uppercase; letter-spacing:.03em; text-align:center; }
+
+.spr-variants{ width:100%; display:flex; flex-direction:column; gap:6px; }
+.spr-vrow{ display:flex; align-items:center; justify-content:space-between; gap:6px; font-size:10.5px; }
+.spr-vlabel{ font-family:'JetBrains Mono',monospace; color:var(--text-muted); letter-spacing:.02em; min-width:46px; }
+
+.spr-tick{
+  width:20px; height:20px; border-radius:6px; flex-shrink:0;
+  background:var(--panel-2); border:1px solid var(--border);
+  cursor:pointer; display:flex; align-items:center; justify-content:center;
+  transition:background .12s ease, border-color .12s ease, transform .12s ease;
+  padding:0;
+}
+.spr-tick:hover{ border-color:#33405e; }
+.spr-tick:active{ transform:scale(.9); }
+.spr-tick:focus-visible{ outline:2px solid var(--karen); outline-offset:1px; }
+.spr-tick svg{ width:12px; height:12px; opacity:0; transition:opacity .12s ease; }
+.spr-tick.on{ background:color-mix(in srgb, var(--vc,var(--mel)) 22%, var(--panel-2)); border-color:var(--vc,var(--mel)); }
+.spr-tick.on svg{ opacity:1; }
+.spr-tick.on svg path{ stroke:var(--vc,var(--mel)); }
+
+.spr-fdots{ display:flex; gap:3px; }
+.spr-fdot{
+  width:8px; height:8px; border-radius:50%;
+  background:var(--panel-2); border:1px solid var(--border);
+}
+.spr-fdot.on{ background:var(--c); border-color:var(--c); box-shadow:0 0 5px var(--c); }
+.spr-frac{ font-family:'JetBrains Mono',monospace; color:var(--text-muted); font-size:10.5px; min-width:24px; text-align:right; }
+
+.spr-footer-note{ padding:18px 18px 0; font-size:10.5px; color:var(--text-muted); text-align:center; line-height:1.5; }
+
+.spr-share-row{ display:flex; align-items:center; gap:8px; margin:10px 0 4px; flex-wrap:wrap; }
+.spr-share-btn{
+  font-family:'Rajdhani',sans-serif; font-weight:600; font-size:12px; letter-spacing:.03em; text-transform:uppercase;
+  padding:7px 12px; border-radius:7px; background:var(--panel-2); border:1px solid var(--border); color:var(--text);
+  cursor:pointer;
+}
+.spr-share-btn:hover{ border-color:#33405e; }
+.spr-share-link{
+  font-family:'JetBrains Mono',monospace; font-size:10.5px; color:var(--text-muted);
+  background:var(--panel-2); border:1px solid var(--border); border-radius:7px; padding:7px 10px;
+  flex:1; min-width:160px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; user-select:all;
+}
+
+.spr-setup{ max-width:440px; margin:30px auto; text-align:center; }
+.spr-setup h2{ font-family:'Rajdhani',sans-serif; font-weight:700; font-size:19px; text-transform:uppercase; margin-bottom:10px; }
+.spr-setup p{ font-size:12.5px; color:var(--text-muted); line-height:1.6; margin-bottom:18px; }
+.spr-setup-btn{
+  font-family:'Rajdhani',sans-serif; font-weight:700; font-size:14px; letter-spacing:.03em; text-transform:uppercase;
+  padding:12px 22px; border-radius:9px; background:linear-gradient(90deg,var(--karen),var(--genna)); border:none; color:var(--void);
+  cursor:pointer;
+}
+.spr-setup-divider{ margin:24px 0; font-size:10.5px; color:var(--text-muted); text-transform:uppercase; letter-spacing:.05em; }
+.spr-setup-manual{ display:flex; gap:8px; justify-content:center; flex-wrap:wrap; }
+.spr-setup-manual input{
+  font-family:'JetBrains Mono',monospace; font-size:12px; padding:9px 10px; border-radius:7px;
+  background:var(--panel-2); border:1px solid var(--border); color:var(--text); width:200px;
+}
+.spr-setup-error{ color:var(--genna); font-size:11.5px; margin-top:14px; }
+</style>
+
+<div id="spr-app">
+  <div class="spr-header">
+    <div class="spr-title spr-h1">Sprite Extraction Log</div>
+    <div class="spr-sub" id="spr-sync-row" onclick="sprRetrySave()" style="cursor:pointer"><span class="spr-dot" id="spr-sync-dot"></span><span id="spr-sync-text">Connecting…</span></div>
+    <div class="spr-progress-wrap">
+      <div class="spr-progress-label"><span id="spr-progress-caption">Family completion</span><b id="spr-progress-num">0/40</b></div>
+      <div class="spr-progress-track"><div class="spr-progress-fill" id="spr-progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="spr-tabs" id="spr-tabs"></div>
+  </div>
+  <div class="spr-content" id="spr-content">
+    <div class="spr-loading">Loading the family's collection…</div>
+  </div>
+  <div class="spr-footer-note">Every tap saves automatically and syncs to everyone using the same link.</div>
+</div>
+
+<script>
+(function(){
+
+  const MEMBERS = [
+    { id:'karen', name:'Karen', color:'var(--karen)' },
+    { id:'genna', name:'Genna', color:'var(--genna)' },
+    { id:'mel',   name:'Mel',   color:'var(--mel)'   },
+    { id:'cass',  name:'Cass',  color:'var(--cass)'  }
+  ];
+
+  const SPRITES = [
+    { id:'water',      name:'Water',      color:'#4FA8FF' },
+    { id:'earth',      name:'Earth',      color:'#7CC576' },
+    { id:'fire',       name:'Fire',       color:'#FF6B4A' },
+    { id:'duck',       name:'Duck',       color:'#FFD24D' },
+    { id:'ghost',      name:'Ghost',      color:'#C7F5EC' },
+    { id:'demon',      name:'Demon',      color:'#FF3B5C' },
+    { id:'king',       name:'King',       color:'#6C5CE7' },
+    { id:'dream',      name:'Dream',      color:'#B583FF' },
+    { id:'punk',       name:'Punk',       color:'#FF4FD8' },
+    { id:'zero-point', name:'Zero Point', color:'#5EE6FF' },
+    { id:'peanut',     name:'Peanut',     color:'#D98E4F', variants:['base'] }
+  ];
+
+  function spriteVariants(sprite){
+    return sprite.variants ? VARIANTS.filter(v=> sprite.variants.includes(v.key)) : VARIANTS;
+  }
+
+  function getSprite(spriteId){
+    return SPRITES.find(s=>s.id===spriteId);
+  }
+
+  const VARIANTS = [
+    { key:'base',   label:'BASE'   },
+    { key:'gold',   label:'GOLD'   },
+    { key:'galaxy', label:'GALAXY' },
+    { key:'gummy',  label:'GUMMY'  }
+  ];
+
+  let collection = null;
+  let activeTab = 'family';
+  let saveTimer = null, isSaving = false, pendingSave = false;
+  let retryTimer = null, retryDelay = 2000;
+  const MAX_RETRY_DELAY = 20000;
+
+  // ---- GitHub-backed storage ----
+  // Fill these in once the repo + token exist.
+  const GITHUB_OWNER  = 'mellymclovin';
+  const GITHUB_REPO   = 'family-sprite-tracker';
+  const GITHUB_PATH   = 'data.json';
+  const GITHUB_BRANCH = 'main';
+  const GITHUB_TOKEN  = 'PASTE_TOKEN_HERE';
+
+  let currentSha = null;
+
+  function ghHeaders(){
+    return {
+      'Accept': 'application/vnd.github+json',
+      'Authorization': 'Bearer ' + GITHUB_TOKEN,
+      'X-GitHub-Api-Version': '2022-11-28'
+    };
+  }
+  function ghUrl(){
+    return `https://api.github.com/repos/${GITHUB_OWNER}/${GITHUB_REPO}/contents/${GITHUB_PATH}`;
+  }
+  function b64encode(str){ return btoa(unescape(encodeURIComponent(str))); }
+  function b64decode(b64){ return decodeURIComponent(escape(atob(b64))); }
+
+  function defaultCollection(){
+    const c = {};
+    MEMBERS.forEach(m=>{
+      c[m.id] = {};
+      SPRITES.forEach(s=>{
+        c[m.id][s.id] = {};
+        spriteVariants(s).forEach(v=>{ c[m.id][s.id][v.key] = false; });
+      });
+    });
+    return c;
+  }
+
+  function backfill(c){
+    const def = defaultCollection();
+    MEMBERS.forEach(m=>{
+      if(!c[m.id]) c[m.id] = def[m.id];
+      SPRITES.forEach(s=>{
+        if(!c[m.id][s.id]) c[m.id][s.id] = def[m.id][s.id];
+        spriteVariants(s).forEach(v=>{
+          const val = c[m.id][s.id][v.key];
+          // coerce legacy numeric counts (or anything truthy) into a boolean owned flag
+          c[m.id][s.id][v.key] = (val === true) || (typeof val === 'number' && val > 0);
+        });
+      });
+    });
+    return c;
+  }
+
+  async function loadState(attempt){
+    attempt = attempt || 0;
+    try{
+      const res = await fetch(ghUrl() + '?ref=' + GITHUB_BRANCH + '&t=' + Date.now(), { headers: ghHeaders() });
+      if(!res.ok) throw new Error('load failed: ' + res.status);
+      const data = await res.json();
+      currentSha = data.sha;
+      collection = backfill(JSON.parse(b64decode(data.content)));
+      setSync('idle');
+      render();
+    }catch(e){
+      console.error('[SpriteTracker] load failed:', e && e.message ? e.message : e, e);
+      if(attempt < 5){
+        setSync('loading');
+        setTimeout(()=> loadState(attempt + 1), Math.min(1500 * Math.pow(2, attempt), 15000));
+      } else {
+        // last resort so the page isn't stuck blank — saves will still
+        // retry against the real sha once a load eventually succeeds
+        collection = collection || defaultCollection();
+        setSync('load-error');
+        render();
+      }
+    }
+  }
+
+  function queueSave(){
+    if(saveTimer) clearTimeout(saveTimer);
+    setSync('pending');
+    saveTimer = setTimeout(performSave, 450);
+  }
+
+  async function refreshSha(){
+    const res = await fetch(ghUrl() + '?ref=' + GITHUB_BRANCH + '&t=' + Date.now(), { headers: ghHeaders() });
+    if(res.ok){ const data = await res.json(); currentSha = data.sha; }
+  }
+
+  async function performSave(){
+    if(isSaving){ pendingSave = true; return; }
+    if(retryTimer){ clearTimeout(retryTimer); retryTimer = null; }
+    isSaving = true;
+    setSync('saving');
+    try{
+      const res = await fetch(ghUrl(), {
+        method: 'PUT',
+        headers: Object.assign({'Content-Type':'application/json'}, ghHeaders()),
+        body: JSON.stringify({
+          message: 'Update sprite collection',
+          content: b64encode(JSON.stringify(collection)),
+          sha: currentSha,
+          branch: GITHUB_BRANCH
+        })
+      });
+      if(res.status === 409){
+        // someone else saved between our load and our write — grab the
+        // latest sha and retry once with our current local state
+        await refreshSha();
+        throw new Error('someone else saved just now — retrying');
+      }
+      if(!res.ok) throw new Error('save failed: ' + res.status);
+      const result = await res.json();
+      currentSha = result.content.sha;
+      setSync('idle');
+      retryDelay = 2000;
+    }catch(e){
+      console.error('[SpriteTracker] save failed:', e && e.message ? e.message : e, e);
+      setSync('error', e);
+      retryTimer = setTimeout(performSave, retryDelay);
+      retryDelay = Math.min(retryDelay * 2, MAX_RETRY_DELAY);
+    }
+    isSaving = false;
+    if(pendingSave){ pendingSave = false; performSave(); }
+  }
+
+  window.sprRetrySave = function(){
+    if(!collection){ loadState(); return; }
+    retryDelay = 2000;
+    performSave();
+  };
+
+  function setSync(status, err){
+    const dot = document.getElementById('spr-sync-dot');
+    const txt = document.getElementById('spr-sync-text');
+    const row = document.getElementById('spr-sync-row');
+    if(!dot || !txt) return;
+    dot.classList.toggle('saving', status==='saving' || status==='pending' || status==='loading');
+    dot.classList.toggle('err', status==='error' || status==='load-error');
+    if(row) row.style.cursor = (status==='error' || status==='load-error') ? 'pointer' : 'default';
+    const reason = err && err.message ? (' [' + err.message + ']') : '';
+    if(status==='saving') txt.textContent = 'Saving…';
+    else if(status==='pending') txt.textContent = 'Saving…';
+    else if(status==='loading') txt.textContent = 'Connecting… (will retry)';
+    else if(status==='error') txt.textContent = 'Save failed — retrying… (tap to retry now)' + reason;
+    else if(status==='load-error') txt.textContent = 'Couldn\'t connect — tap to retry';
+    else txt.textContent = 'Synced live for everyone';
+  }
+
+  window.sprToggle = function(memberId, spriteId, variantKey){
+    collection[memberId][spriteId][variantKey] = !collection[memberId][spriteId][variantKey];
+    render();
+    queueSave();
+  };
+
+  window.sprSetTab = function(tab){
+    activeTab = tab;
+    render();
+  };
+
+  function isOwned(memberId, spriteId, variantKey){
+    return !!collection[memberId][spriteId][variantKey];
+  }
+
+  function familyOwners(spriteId, variantKey){
+    return MEMBERS.filter(m => isOwned(m.id, spriteId, variantKey));
+  }
+
+  function personalLitFraction(memberId, spriteId){
+    const sprite = getSprite(spriteId);
+    const vs = spriteVariants(sprite);
+    let n = 0;
+    vs.forEach(v=>{ if(isOwned(memberId, spriteId, v.key)) n++; });
+    return n / vs.length;
+  }
+
+  function familyLitFraction(spriteId){
+    const sprite = getSprite(spriteId);
+    const vs = spriteVariants(sprite);
+    let n = 0;
+    vs.forEach(v=>{ if(familyOwners(spriteId, v.key).length > 0) n++; });
+    return n / vs.length;
+  }
+
+  function personalProgress(memberId){
+    let collected = 0, total = 0;
+    SPRITES.forEach(s=>{
+      const vs = spriteVariants(s);
+      total += vs.length;
+      vs.forEach(v=>{ if(isOwned(memberId, s.id, v.key)) collected++; });
+    });
+    return { collected, total };
+  }
+
+  function familyProgress(){
+    let collected = 0, total = 0;
+    SPRITES.forEach(s=>{
+      const vs = spriteVariants(s);
+      total += vs.length;
+      vs.forEach(v=>{ if(familyOwners(s.id, v.key).length > 0) collected++; });
+    });
+    return { collected, total };
+  }
+
+  function renderTabs(){
+    const wrap = document.getElementById('spr-tabs');
+    let html = `<button class="spr-tab ${activeTab==='family'?'active':''}" style="${activeTab==='family'?'background:linear-gradient(90deg,var(--karen),var(--genna))':''}" onclick="sprSetTab('family')">Family Total</button>`;
+    MEMBERS.forEach(m=>{
+      const isActive = activeTab === m.id;
+      html += `<button class="spr-tab ${isActive?'active':''}" style="${isActive?`background:${m.color}`:''}" onclick="sprSetTab('${m.id}')">${m.name}</button>`;
+    });
+    wrap.innerHTML = html;
+  }
+
+  function renderProgress(){
+    const cap = document.getElementById('spr-progress-caption');
+    const num = document.getElementById('spr-progress-num');
+    const fill = document.getElementById('spr-progress-fill');
+    let p;
+    if(activeTab === 'family'){
+      cap.textContent = 'Family completion (1+ owns it)';
+      p = familyProgress();
+    } else {
+      const m = MEMBERS.find(x=>x.id===activeTab);
+      cap.textContent = m.name + "'s completion";
+      p = personalProgress(activeTab);
+    }
+    num.textContent = p.collected + '/' + p.total;
+    fill.style.width = (p.total ? (p.collected/p.total*100) : 0) + '%';
+  }
+
+  function renderContent(){
+    const el = document.getElementById('spr-content');
+    let html = '<div class="spr-grid">';
+
+    SPRITES.forEach(s=>{
+      const vs = spriteVariants(s);
+      if(activeTab === 'family'){
+        const glow = familyLitFraction(s.id);
+        html += `<div class="spr-card">
+          <div class="spr-orb-wrap"><div class="spr-orb ${glow>0?'lit':''}" style="--sc:${s.color};--glow:${glow}"></div></div>
+          <div class="spr-name">${s.name}</div>
+          <div class="spr-variants">`;
+        vs.forEach(v=>{
+          const owners = familyOwners(s.id, v.key);
+          let dots = '';
+          MEMBERS.forEach(m=>{
+            const on = owners.some(o=>o.id===m.id);
+            dots += `<span class="spr-fdot ${on?'on':''}" style="--c:${m.color}"></span>`;
+          });
+          html += `<div class="spr-vrow">
+            <span class="spr-vlabel">${vs.length===1?'OWNED':v.label}</span>
+            <div class="spr-fdots">${dots}</div>
+            <span class="spr-frac">${owners.length}/${MEMBERS.length}</span>
+          </div>`;
+        });
+        html += `</div></div>`;
+      } else {
+        const memberId = activeTab;
+        const glow = personalLitFraction(memberId, s.id);
+        html += `<div class="spr-card">
+          <div class="spr-orb-wrap"><div class="spr-orb ${glow>0?'lit':''}" style="--sc:${s.color};--glow:${glow}"></div></div>
+          <div class="spr-name">${s.name}</div>
+          <div class="spr-variants">`;
+        vs.forEach(v=>{
+          const owned = isOwned(memberId, s.id, v.key);
+          html += `<div class="spr-vrow">
+            <span class="spr-vlabel">${vs.length===1?'OWNED':v.label}</span>
+            <button class="spr-tick ${owned?'on':''}" style="--vc:${s.color}" onclick="sprToggle('${memberId}','${s.id}','${v.key}')" aria-label="${v.label} ${s.name}" aria-pressed="${owned}">
+              <svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5L6.2 11.5L13 4.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>`;
+        });
+        html += `</div></div>`;
+      }
+    });
+
+    html += '</div>';
+    el.innerHTML = html;
+  }
+
+  function render(){
+    if(!collection) return;
+    renderTabs();
+    renderContent();
+    renderProgress();
+  }
+
+  loadState();
+})();
+</script>
